@@ -1,0 +1,67 @@
+table 'Customer Information'
+	lineageTag: 523af0b5-0d2b-48b9-9f13-dfbf0790438d
+
+	column 'Customer ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: ac6114d5-19a7-4475-a679-9fba01499f10
+		summarizeBy: none
+		sourceColumn: Customer ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		lineageTag: b75131a6-4521-4ad0-8166-a27b89761746
+		summarizeBy: none
+		sourceColumn: Customer
+
+		annotation SummarizationSetBy = Automatic
+
+	column Address
+		dataType: string
+		lineageTag: 4d85e598-9675-485f-aa4c-0aa1dd86c952
+		summarizeBy: none
+		sourceColumn: Address
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 6de9b746-f928-4b2d-9768-0bba507d84e5
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: 31908797-ebc9-4ef4-a591-fee7091a5399
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Zipcode
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b8b9c93-c5ef-4a9b-a21e-3ea88f894e45
+		summarizeBy: sum
+		sourceColumn: Zipcode
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Customer Information' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\Muhammad\Desktop\EXCEL DASHBOARDS\Power-BI-main\Apocolypse Food Prep - Visualizations Tutorial.xlsx"), null, true),
+				    #"Customer Information_Sheet" = Source{[Item="Customer Information",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Customer Information_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Customer ID", Int64.Type}, {"Customer", type text}, {"Address", type text}, {"City", type text}, {"State", type text}, {"Zipcode", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

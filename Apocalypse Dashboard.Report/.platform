@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Apocalypse Dashboard"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "37845a40-8ebc-4535-bb2c-a33c9d41c2d2"
+  }
+}

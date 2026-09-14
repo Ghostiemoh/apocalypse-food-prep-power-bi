@@ -1,0 +1,158 @@
+table 'Apocolypse Sales'
+	lineageTag: d9c17310-294b-4e20-8c58-181d333b23b1
+
+	column 'Cust ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7a1c42a8-28f4-4d17-bbfd-7d56241fd2b8
+		summarizeBy: count
+		sourceColumn: Cust ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column Customer
+		dataType: string
+		isHidden
+		lineageTag: ae39e0d5-fb51-4960-8d17-ea95a1a0b151
+		summarizeBy: none
+		sourceColumn: Customer
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Apocolypse Sales","TableItemName":"Customer (groups)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 4c593606-78de-425f-8769-1f703a74fcff
+		summarizeBy: none
+		sourceColumn: Product ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Order ID'
+		dataType: int64
+		formatString: 0
+		lineageTag: 81bc8629-180b-4bdc-9a91-3eaf4633e5e5
+		summarizeBy: count
+		sourceColumn: Order ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Units Sold'
+		dataType: int64
+		formatString: 0
+		lineageTag: d511d8a4-c91e-4834-8fac-c13f7b700c8a
+		summarizeBy: sum
+		sourceColumn: Units Sold
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date Purchased'
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8f905850-d17c-41c0-b67c-4f002c663aa4
+		summarizeBy: none
+		sourceColumn: Date Purchased
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Apocolypse Sales","TableItemName":"Date Purchased (bins)","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column 'Customer (groups)' =
+			SWITCH(
+				TRUE,
+				ISBLANK('Apocolypse Sales'[Customer]),
+				"(Blank)",
+				'Apocolypse Sales'[Customer] IN {"Alex The Analyst Apocolype Preppers",
+					"Apocolypse Preppers United"},
+				"Best Client",
+				'Apocolypse Sales'[Customer] IN {"Prep4Anything Prepping Store",
+					"Uncle Joe's Prep Shop"},
+				"Worst Clients",
+				'Apocolypse Sales'[Customer]
+			)
+		lineageTag: ae7f3ee3-31d5-4cfc-ac5c-a5887a44791b
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Apocolypse Sales"
+				          }
+				        },
+				        "Property": "Customer"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"a","Entity":"Apocolypse Sales"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"a"}},"Property":"Customer"}}],"GroupItems":[{"DisplayName":"(Blank)","BlankDefaultPlaceholder":true},{"DisplayName":"Best Client","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"a"}},"Property":"Customer"}}],"Values":[[{"Literal":{"Value":"'Alex The Analyst Apocolype Preppers'"}}],[{"Literal":{"Value":"'Apocolypse Preppers United'"}}]]}}},{"DisplayName":"Worst Clients","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"a"}},"Property":"Customer"}}],"Values":[[{"Literal":{"Value":"'Prep4Anything Prepping Store'"}}],[{"Literal":{"Value":"'Uncle Joe''s Prep Shop'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Date Purchased (bins)' =
+			IF(
+				ISBLANK('Apocolypse Sales'[Date Purchased]),
+				BLANK(),
+				DATE(
+					YEAR('Apocolypse Sales'[Date Purchased]),
+					1 + (MONTH('Apocolypse Sales'[Date Purchased]) - 1),
+					1
+				)
+			)
+		formatString: mmmm yyyy
+		lineageTag: 5c5e396d-a2e4-4f16-99dc-4d1b6795597f
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Apocolypse Sales"
+				          }
+				        },
+				        "Property": "Date Purchased"
+				      }
+				    }
+				  ],
+				  "binningMetadata": {
+				    "binSize": {
+				      "value": 1.0,
+				      "unit": 6
+				    }
+				  }
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"a","Entity":"Apocolypse Sales"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"a"}},"Property":"Date Purchased"}}],"BinItem":{"Expression":{"Floor":{"Expression":{"Column":{"Expression":{"SourceRef":{"Source":"a"}},"Property":"Date Purchased"}},"Size":1.0,"TimeUnit":2}}}}
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	partition 'Apocolypse Sales' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\Muhammad\Desktop\EXCEL DASHBOARDS\Power-BI-main\Apocolypse Food Prep - Visualizations Tutorial.xlsx"), null, true),
+				    #"Apocolypse Sales_Sheet" = Source{[Item="Apocolypse Sales",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Apocolypse Sales_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Cust ID", Int64.Type}, {"Customer", type text}, {"Product ID", Int64.Type}, {"Order ID", Int64.Type}, {"Units Sold", Int64.Type}, {"Date Purchased", type date}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+

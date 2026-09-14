@@ -1,0 +1,80 @@
+table 'Key Measures'
+	lineageTag: 490019d9-792b-4bc7-bb6b-a04f3a3468df
+
+	measure 'Total Units Sold' = SUM('Apocolypse Sales'[Units Sold])
+		formatString: #,0
+		lineageTag: c81afdf8-6665-4401-b5c2-67e5ea542603
+
+	measure 'Total Revenue' = SUMX('Apocolypse Sales', 'Apocolypse Sales'[Units Sold] * RELATED('Apocolypse Store'[Price]))
+		formatString: $#,0.00
+		lineageTag: 0d62ee50-1c50-4785-af30-db5ac3314a55
+
+	measure 'Total Cost' = SUMX('Apocolypse Sales', 'Apocolypse Sales'[Units Sold] * RELATED('Apocolypse Store'[Production Cost]))
+		formatString: $#,0.00
+		lineageTag: 4b3e00aa-8b10-413d-908d-8c334d7750e6
+
+	measure 'Total Profit' = [Total Revenue] - [Total Cost]
+		formatString: $#,0.00
+		lineageTag: 34d7f576-8071-4d06-a86e-55688bbc788f
+
+	measure 'Profit Margin %' = DIVIDE([Total Profit], [Total Revenue])
+		formatString: 0.0%
+		lineageTag: 156f6b92-49e1-4102-bc8f-5f5425e5bcd7
+
+	measure 'Total Orders' = DISTINCTCOUNT('Apocolypse Sales'[Order ID])
+		formatString: #,0
+		lineageTag: fb60b522-620d-4685-8e0f-a0259b8f6d63
+
+	measure 'Total Customers' = DISTINCTCOUNT('Apocolypse Sales'[Cust ID])
+		formatString: #,0
+		lineageTag: 821b44af-fa04-463f-9119-4ceb2f706e77
+
+	measure 'Average Order Value' = DIVIDE([Total Revenue], [Total Orders])
+		formatString: $#,0.00
+		lineageTag: 147578a9-fec5-4c0d-924d-b9fad73717eb
+
+	measure 'Units per Order' = DIVIDE([Total Units Sold], [Total Orders])
+		formatString: #,0.0
+		lineageTag: aca9419b-a2f0-48b8-a449-6b45d062e86b
+
+	measure 'Average Selling Price' = DIVIDE([Total Revenue], [Total Units Sold])
+		formatString: $#,0.00
+		lineageTag: 7a5e7d57-4e35-4d8d-ae2a-8d754606b386
+
+	measure 'Revenue MTD' = TOTALMTD([Total Revenue], 'Date'[Date])
+		formatString: $#,0.00
+		lineageTag: 09778566-1f75-4d97-8ffa-23429f740bf7
+
+	measure 'Revenue Previous Month' = CALCULATE([Total Revenue], PREVIOUSMONTH('Date'[Date]))
+		formatString: $#,0.00
+		lineageTag: f049e25e-9d39-42e5-a8b6-ef91655fb803
+
+	measure 'Revenue MoM %' = VAR Prev = [Revenue Previous Month] RETURN DIVIDE([Total Revenue] - Prev, Prev)
+		formatString: 0.0%
+		lineageTag: 5de8e437-b570-4125-8934-41de83a6027a
+
+	measure 'Revenue Running Total' = CALCULATE([Total Revenue], FILTER(ALLSELECTED('Date'[Date]), 'Date'[Date] <= MAX('Date'[Date])))
+		formatString: $#,0.00
+		lineageTag: 21bb15b6-742a-4bf7-83d9-7c05cefe88d9
+
+	measure 'Total Buyers' = DISTINCTCOUNT('Customer Buyer Information'[Buyer ID])
+		formatString: #,0
+		lineageTag: d5588b0a-4e89-4679-8e7c-c932b1425c96
+
+	measure 'Average Buyer Age' = AVERAGE('Customer Buyer Information'[Age])
+		formatString: #,0.0
+		lineageTag: b5387ea7-de7f-4146-82fa-424b8a830176
+
+	measure 'Units Purchased by Buyers' = SUM('Customer Buyer Information'[Total Purchased])
+		formatString: #,0
+		lineageTag: 0db8e650-38ec-44fd-a617-a624b22d400d
+
+	column Value
+		lineageTag: c5a730c0-be38-4aed-a651-96f3c58365fb
+		isNameInferred
+		sourceColumn: [Value]
+
+	partition 'Key Measures' = calculated
+		mode: import
+		source = {BLANK()}
+

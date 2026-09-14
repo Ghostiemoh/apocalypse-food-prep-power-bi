@@ -1,0 +1,25 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["Apocolypse Sales","Apocolypse Store","Customer Information","Customer Buyer Information"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+annotation __TEdtr = 1
+
+ref table 'Apocolypse Sales'
+ref table 'Apocolypse Store'
+ref table 'Customer Information'
+ref table 'Customer Buyer Information'
+ref table Date
+ref table 'Key Measures'
+
+ref cultureInfo en-US
+

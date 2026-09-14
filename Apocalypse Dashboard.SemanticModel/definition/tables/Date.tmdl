@@ -1,0 +1,86 @@
+table Date
+	lineageTag: a6b18d58-7dfa-4bb7-bd0c-93333791944a
+	dataCategory: Time
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: dd mmm yyyy
+		lineageTag: 0a365288-d0da-48b2-abda-f1c8cf1151fc
+		summarizeBy: none
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year = YEAR('Date'[Date])
+		dataType: int64
+		formatString: 0
+		lineageTag: 0976f92a-d821-465a-867a-4970cdf8bb65
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number' = MONTH('Date'[Date])
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5c223ff6-3033-4e0b-8dfa-1327f7580af0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month = FORMAT('Date'[Date], "mmm")
+		dataType: string
+		lineageTag: 60e58849-7fa3-4543-bc97-bba60aee1f30
+		summarizeBy: none
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Year Month Key' = YEAR('Date'[Date]) * 100 + MONTH('Date'[Date])
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5fcf9e3d-0f7d-43a8-86fa-c9ad83e3450c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Year' = FORMAT('Date'[Date], "mmm yyyy")
+		dataType: string
+		lineageTag: 1c267a07-c6c5-4946-ad81-f64014a5fefa
+		summarizeBy: none
+		sortByColumn: 'Year Month Key'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter = "Q" & QUARTER('Date'[Date])
+		dataType: string
+		lineageTag: 7624a351-37ad-448e-8aee-cd99dece3fe0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Of Week' = WEEKDAY('Date'[Date], 2)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 47453561-eb4f-4e11-93ee-15767042c720
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Day Name' = FORMAT('Date'[Date], "ddd")
+		dataType: string
+		lineageTag: 4f9c4a48-56d7-4654-bdcf-dbda34b0c17f
+		summarizeBy: none
+		sortByColumn: 'Day Of Week'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Date = calculated
+		mode: import
+		source = CALENDAR(DATE(2022, 1, 1), DATE(2022, 12, 31))
+
+	annotation PBI_Id = 89326b26b2c74660a2217e9f54db6da6
+

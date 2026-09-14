@@ -1,0 +1,21 @@
+relationship 8450f609-aa10-45c4-8227-52b37b40ccfb
+	fromColumn: 'Apocolypse Sales'.'Cust ID'
+	toColumn: 'Customer Information'.'Customer ID'
+
+relationship 0f0c7ba7-2894-45de-bdfb-c17dfa3aee66
+	fromColumn: 'Apocolypse Sales'.'Product ID'
+	toColumn: 'Apocolypse Store'.'Product ID'
+
+relationship 42e6da03-eacd-4efa-8ad0-9b6582599b5c
+	fromColumn: 'Apocolypse Sales'.'Date Purchased'
+	toColumn: Date.Date
+
+relationship 420dec7e-fc8c-4e96-bd7c-28d7247fc43b
+	fromColumn: 'Customer Buyer Information'.'Customer ID'
+	toColumn: 'Customer Information'.'Customer ID'
+
+relationship 68ce9c86-a490-48b0-862f-1eadac95a79a
+	isActive: false
+	fromColumn: 'Customer Buyer Information'.'Product ID Purchased'
+	toColumn: 'Apocolypse Store'.'Product ID'
+

@@ -1,0 +1,62 @@
+table 'Apocolypse Store'
+	lineageTag: f3645ae6-568f-4590-a337-7973ee02892e
+
+	column 'Product ID'
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1f6171bd-da0f-45a7-8bff-0e3e0705daff
+		summarizeBy: none
+		sourceColumn: Product ID
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Product Name'
+		dataType: string
+		lineageTag: 33c113f3-e9c9-44f6-b6cf-6fb70e210a93
+		summarizeBy: none
+		sourceColumn: Product Name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Price
+		dataType: double
+		lineageTag: 10158805-1bbd-41d1-b492-5906c425c046
+		summarizeBy: none
+		sourceColumn: Price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Production Cost'
+		dataType: double
+		lineageTag: 5d3492c7-5145-41c4-bcd8-e03bcd3cf1bb
+		summarizeBy: none
+		sourceColumn: Production Cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Profits = 'Apocolypse Store'[Price]-'Apocolypse Store'[Production Cost]
+		lineageTag: e37d479d-167f-4c52-b4f7-ee20f4b69937
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Apocolypse Store' = m
+		mode: import
+		source =
+				let
+				    Source = Excel.Workbook(File.Contents("C:\Users\Muhammad\Desktop\EXCEL DASHBOARDS\Power-BI-main\Apocolypse Food Prep - Visualizations Tutorial.xlsx"), null, true),
+				    #"Apocolypse Store_Sheet" = Source{[Item="Apocolypse Store",Kind="Sheet"]}[Data],
+				    #"Promoted Headers" = Table.PromoteHeaders(#"Apocolypse Store_Sheet", [PromoteAllScalars=true]),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"Product ID", Int64.Type}, {"Product Name", type text}, {"Price", type number}, {"Production Cost", type number}})
+				in
+				    #"Changed Type"
+
+	annotation PBI_ResultType = Table
+
